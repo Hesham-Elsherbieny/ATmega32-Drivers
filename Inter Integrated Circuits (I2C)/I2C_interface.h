@@ -31,8 +31,12 @@ I2C_Error_States I2C_enuMasterSendDataByte(u8 Copy_u8Data);
 
 I2C_Error_States I2C_enuMasterReadDataByte(u8 * Copy_pu8Data);
 
+void I2C_voidSetACK(void);
+
+void I2C_voidSetNACK(void);
 
 void I2C_voidSendStopCondition(void);
+
 
 
 
