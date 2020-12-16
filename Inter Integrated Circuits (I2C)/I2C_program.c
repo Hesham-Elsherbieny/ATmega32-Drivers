@@ -186,18 +186,47 @@ I2C_Error_States I2C_enuMasterReadDataByte(u8 * Copy_pu8Data)
 
 	/* Polling on the Flag */
 	while(!GET_BIT(TWCR,TWCR_TWINT));
-	/* Check Status code */
-	if((TWSR & I2C_STATUS_CODE_MASK) != I2C_MR_DATA_ACK)
-	{
-		Local_enuState = I2C_MR_DATA_Error;
-	}
-	else
-	{
-		*Copy_pu8Data = TWDR;
-	}
 
+	/* Checking whether ACK or NACK should be returned */
+	if(GET_BIT(TWCR,TWCR_TWEA) == 1) /* indicates that ACK should be returned */
+	{
+		/* Check Status code which indicates that Data byte has been received and ACK has been returned */
+		if((TWSR & I2C_STATUS_CODE_MASK) != I2C_MR_DATA_ACK)
+		{
+			Local_enuState = I2C_MR_DATA_Error;
+		}
+		else
+		{
+			*Copy_pu8Data = TWDR;
+		}
+	}
+	else if(GET_BIT(TWCR,TWCR_TWEA) == 0) /* indicates that NACK should be returned */
+	{
+		/* Check Status code which indicates that Data byte has been received and NACK has been returned */
+		if((TWSR & I2C_STATUS_CODE_MASK) != I2C_MR_DATA_NACK)
+		{
+			Local_enuState = I2C_MR_DATA_Error;
+		}
+		else
+		{
+			*Copy_pu8Data = TWDR;
+		}
+
+	}
 
 	return Local_enuState;
+}
+
+void I2C_voidSetACK(void)
+{
+  //Set Acknowledge Bit
+  SET_BIT(TWCR,TWCR_TWEA);
+}
+
+void I2C_voidSetNACK(void)
+{
+  //Clear Acknowledge Bit to Send NACK
+  CLR_BIT(TWCR,TWCR_TWEA);
 }
 
 void I2C_voidSendStopCondition(void)

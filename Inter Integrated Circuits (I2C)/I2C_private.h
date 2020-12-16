@@ -35,7 +35,7 @@
 #define I2C_MR_RSC_ACK         0x10
 #define I2C_MR_SLA_R_ACK       0x40
 #define I2C_MR_DATA_ACK        0x50
-
+#define I2C_MR_DATA_NACK	   0x58
 
 
 
